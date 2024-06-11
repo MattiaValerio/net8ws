@@ -1,6 +1,8 @@
 ﻿@page "/"
 
 
+<button id="closebtn" class="rounded border bg-blue-500 px-2 py-1 font-bold uppercase text-white">CHIUDI CONNESSIONE</button>
+
 <div class="m-3 flex flex-col justify-center gap-3">
     <input id="chatbox" class="border px-1">
     <button id="btn" class="rounded border bg-blue-500 px-2 py-1 font-bold uppercase text-white">Invia</button>
@@ -9,7 +11,7 @@
 
 
 <script>
-    const socket = new WebSocket('ws://mattiavalerio.info:1433//');
+    const socket = new WebSocket('ws://localhost:1433/');
 
     socket.onmessage = function (event) {
         const messages = document.getElementById("messages");
@@ -21,6 +23,23 @@
         let text = document.getElementById("chatbox").value;
         socket.send(text);
         document.getElementById("chatbox").value = "";
+    });
+
+    // Connection opened
+    socket.addEventListener("open", (event) => {
+        socket.send("utente connesso");
+    });
+
+    // Listen for messages
+    socket.addEventListener("message", (event) => {
+        console.log("Message from server ", event.data);
+    });
+
+    // fuunction that close the connection 
+    document.getElementById("closebtn").addEventListener("click", function () {
+        socket.close();
+        console.log("connesione chiusa");
+        alert("[CLOSE] connessione chiusa");
     });
 
 </script>
