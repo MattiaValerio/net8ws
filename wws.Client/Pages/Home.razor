@@ -1,0 +1,26 @@
+﻿@page "/"
+
+
+<div class="m-3 flex flex-col justify-center gap-3">
+    <input id="chatbox" class="border px-1">
+    <button id="btn" class="rounded border bg-blue-500 px-2 py-1 font-bold uppercase text-white">Invia</button>
+</div>
+<div id="messages"></div>
+
+
+<script>
+    const socket = new WebSocket('ws://localhost:1433/');
+
+    socket.onmessage = function (event) {
+        const messages = document.getElementById("messages");
+        messages.innerHTML += `<p>${event.data}</p>`;
+    };
+
+    document.getElementById("btn").addEventListener("click", function (event) {
+        // take the value of chatbox input
+        let text = document.getElementById("chatbox").value;
+        socket.send(text);
+        document.getElementById("chatbox").value = "";
+    });
+
+</script>

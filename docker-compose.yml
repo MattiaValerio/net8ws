@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  wws.api:
+    image: ${DOCKER_REGISTRY-}wwsapi
+    build:
+      context: .
+      dockerfile: wws.API/Dockerfile
+  wws.client:
+    image: frontend
+    ports:
+      - "8082:80"
+      - "4443:443"
