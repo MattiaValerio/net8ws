@@ -1,7 +1,9 @@
 ﻿@page "/"
 
-
-<button id="closebtn" class="rounded border bg-blue-500 px-2 py-1 font-bold uppercase text-white">CHIUDI CONNESSIONE</button>
+<div class="flex w-full items-center justify-center">
+    <button id="openbtn" class="rounded border bg-blue-500 px-2 py-1 font-bold uppercase text-white">APRI CONNESSIONE</button>
+    <button id="closebtn" class="rounded border bg-blue-500 px-2 py-1 font-bold uppercase text-white">CHIUDI CONNESSIONE</button>
+</div>
 
 <div class="m-3 flex flex-col justify-center gap-3">
     <input id="chatbox" class="border px-1">
@@ -12,6 +14,18 @@
 
 <script>
     const socket = new WebSocket('ws://localhost:1433/');
+    
+    // create an alert on ws error
+    socket.onerror = function(event){
+        alert("[ERRORE] errore durante la connessione");
+    }
+
+    // function that close the connection 
+    document.getElementById("closebtn").addEventListener("click", function () {
+        socket.close();
+        console.log("connesione chiusa");
+        alert("[CLOSE] connessione chiusa");
+    });
 
     socket.onmessage = function (event) {
         const messages = document.getElementById("messages");
@@ -27,19 +41,19 @@
 
     // Connection opened
     socket.addEventListener("open", (event) => {
-        socket.send("utente connesso");
+        console.log("connesione aperta default")
     });
+
+    
 
     // Listen for messages
     socket.addEventListener("message", (event) => {
-        console.log("Message from server ", event.data);
+        console.log("Messaggio ricevuto ", event.data);
     });
 
-    // fuunction that close the connection 
-    document.getElementById("closebtn").addEventListener("click", function () {
+    // when closing the page close the connection to the ws 
+    window.onbeforeunload = function () {
         socket.close();
-        console.log("connesione chiusa");
-        alert("[CLOSE] connessione chiusa");
-    });
-
+        alert("[CLOSING] chiusura connessione...")
+    };
 </script>
